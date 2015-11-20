@@ -17,12 +17,12 @@ public class InstallmentCalculation {
         private final double ir;
 
         /** Tenor */
-        private final double t;
+        private final int t;
 
         /** Grace period */
-        private final double gp;
+        private final int gp;
 
-        public Params(double b, double sbr, double h, double ir, double t, double gp) {
+        public Params(double b, double sbr, double h, double ir, int t, int gp) {
             this.b = b;
             this.sbr = sbr;
             this.h = h;
@@ -57,7 +57,7 @@ public class InstallmentCalculation {
 
     }
 
-    public static Params params(double b, double sbr, double h, double ir, double t, double gp) {
+    public static Params params(double b, double sbr, double h, double ir, int t, int gp) {
         return new Params(b, sbr, h, ir, t, gp);
     }
 
@@ -67,17 +67,17 @@ public class InstallmentCalculation {
         }
 
         double result = p.b;
-        result = result * (1 - p.sbr);
-        result = result * (1 - p.h);
+        result *= (1 - p.sbr);
+        result += (1 - p.h);
         double tmp = Math.pow(1 + p.ir / 12, p.t - p.gp);
-        result = result * tmp;
-        result = result * p.ir / 12;
-        result = result / (tmp - 1);
+        result *= tmp;
+        result *= p.ir / 12;
+        result /= (tmp - 1);
 
         return result;
     };
 
-    public static final Function<Params, Double> GRACE_PERIOD_FUNCTION = p ->
+    public static final Function<Params, Double> FUNCTION_GRACE_PERIOD = p ->
             p.b * p.ir / p.gp;
 
 }
